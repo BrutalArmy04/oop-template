@@ -8,7 +8,10 @@
 #include <exception>
 using namespace std;
 
-
+template<typename T, typename... Args>
+shared_ptr<class Card> createCard(Args&&... args) {
+    return make_shared<T>(forward<Args>(args)...);
+}
 
 class GameException : public std::exception {
 protected:
@@ -120,34 +123,6 @@ public:
     }
 };
 
-class CardFactory {
-public:
-    template<typename... Args>
-    static std::shared_ptr<Card> createCard(const std::string& name, Args&&... args) {
-        if (name == "Copper") return std::make_shared<Treasury_Card>(0, name, 1);
-        if (name == "Silver") return std::make_shared<Treasury_Card>(3, name, 2);
-        if (name == "Gold") return std::make_shared<Treasury_Card>(6, name, 3);
-        if (name == "Estate") return std::make_shared<Victory_Card>(2, name, 1);
-        if (name == "Duchy") return std::make_shared<Victory_Card>(5, name, 3);
-        if (name == "Province") return std::make_shared<Victory_Card>(8, name, 6);
-        if (name == "Curse") return std::make_shared<Victory_Card>(0, name, -1);
-
-        // Action Cards
-        if (name == "Moat") return std::make_shared<Action_Card>(2, name, 0, 2, 0, 0);
-        if (name == "Village") return std::make_shared<Action_Card>(3, name, 2, 1, 0, 0);
-        if (name == "Smithy") return std::make_shared<Action_Card>(4, name, 0, 3, 0, 0);
-        if (name == "Festival") return std::make_shared<Action_Card>(5, name, 2, 0, 2, 1);
-        if (name == "Laboratory") return std::make_shared<Action_Card>(5, name, 1, 2, 0, 0);
-        if (name == "Throne Room") return std::make_shared<Action_Card>(4, name, 0, 0, 0, 0);
-        if (name == "Merchant") return std::make_shared<Action_Card>(3, name, 1, 1, 0, 0);
-        if (name == "Gardens") return std::make_shared<Action_Card>(4, name, 0, 0, 0, 0);
-        if (name == "Council Room") return std::make_shared<Action_Card>(5, name, 0, 4, 0, 1);
-        if (name == "Woodcutter") return std::make_shared<Action_Card>(3, name, 0, 0, 2, 1);
-
-        throw std::invalid_argument("Unknown card name: " + name);
-    }
-};
-
 class Table {
 private:
     unordered_map<string, pair<shared_ptr<Card>, int>> supply;
@@ -255,10 +230,6 @@ public:
     }
 
     void playTreasures() {
-        cout << "Your hand:\n";
-        for (size_t i = 0; i < hand.size(); ++i) {
-            cout << i << " - " << *hand[i] << endl;
-        }
         cout << "\nPlaying all Treasure cards...\n";
         for (auto it = hand.begin(); it != hand.end(); ) {
             if (auto tc = dynamic_pointer_cast<Treasury_Card>(*it)) {
@@ -367,25 +338,24 @@ void Game::addPlayer(const string& name) {
 void Game::initializeSupply() {
     if (supplyInitialized) return;
     supplyInitialized = true;
-
-    table += {CardFactory::createCard("Copper"), 60};
-    table += {CardFactory::createCard("Silver"), 40};
-    table += {CardFactory::createCard("Gold"), 30};
-    table += {CardFactory::createCard("Estate"), 24};
-    table += {CardFactory::createCard("Duchy"), 12};
-    table += {CardFactory::createCard("Province"), 12};
-    table += {CardFactory::createCard("Curse"), 30};
-
-    table += {CardFactory::createCard("Moat"), 10};
-    table += {CardFactory::createCard("Village"), 10};
-    table += {CardFactory::createCard("Smithy"), 10};
-    table += {CardFactory::createCard("Festival"), 10};
-    table += {CardFactory::createCard("Laboratory"), 10};
-    table += {CardFactory::createCard("Throne Room"), 10};
-    table += {CardFactory::createCard("Merchant"), 10};
-    table += {CardFactory::createCard("Gardens"), 10};
-    table += {CardFactory::createCard("Council Room"), 10};
-    table += {CardFactory::createCard("Woodcutter"), 10};
+    // table + Card (op supraincarcat) sau += in loc de addcard, remove -=
+    table += {createCard<Treasury_Card>(0, "Copper", 1), 60};
+    table += {createCard<Treasury_Card>(3, "Silver", 2), 40};
+    table += {createCard<Treasury_Card>(6, "Gold", 3), 30};
+    table += {createCard<Victory_Card>(2, "Estate", 1), 24};
+    table += {createCard<Victory_Card>(5, "Duchy", 3), 12};
+    table += {createCard<Victory_Card>(8, "Province", 6), 12};
+    table += {createCard<Victory_Card>(0, "Curse", -1), 30};
+    table += {createCard<Action_Card>(2, "Moat", 0, 2, 0, 0), 10};
+    table += {createCard<Action_Card>(3, "Village", 2, 1, 0, 0), 10};
+    table += {createCard<Action_Card>(4, "Smithy", 0, 3, 0, 0), 10};
+    table += {createCard<Action_Card>(5, "Festival", 2, 0, 2, 1), 10};
+    table += {createCard<Action_Card>(5, "Laboratory", 1, 2, 0, 0), 10};
+    table += {createCard<Action_Card>(4, "Throne Room", 0, 0, 0, 0), 10};   // poate implementez
+    table += {createCard<Action_Card>(3, "Merchant", 1, 1, 0, 0), 10};
+    table += {createCard<Action_Card>(4, "Gardens", 0, 0, 0, 0), 10};       // poate implementez
+    table += {createCard<Action_Card>(5, "Council Room", 0, 4, 0, 1), 10};
+    table += {createCard<Action_Card>(3, "Woodcutter", 0, 0, 2, 1), 10};
 }
 
 void Game::startGame() {
@@ -440,36 +410,3 @@ int main() {
 
     return 0;
 }
-
-    /////////////////////////////////////////////////////////////////////////
-    /// Observație: dacă aveți nevoie să citiți date de intrare de la tastatură,
-    /// dați exemple de date de intrare folosind fișierul tastatura.txt
-    /// Trebuie să aveți în fișierul tastatura.txt suficiente date de intrare
-    /// (în formatul impus de voi) astfel încât execuția programului să se încheie.
-    /// De asemenea, trebuie să adăugați în acest fișier date de intrare
-    /// pentru cât mai multe ramuri de execuție.
-    /// Dorim să facem acest lucru pentru a automatiza testarea codului, fără să
-    /// mai pierdem timp de fiecare dată să introducem de la zero aceleași date de intrare.
-    ///
-    /// Pe GitHub Actions (bife), fișierul tastatura.txt este folosit
-    /// pentru a simula date introduse de la tastatură.
-    /// Bifele verifică dacă programul are erori de compilare, erori de memorie și memory leaks.
-    ///
-    /// Dacă nu puneți în tastatura.txt suficiente date de intrare, îmi rezerv dreptul să vă
-    /// testez codul cu ce date de intrare am chef și să nu pun notă dacă găsesc vreun bug.
-    /// Impun această cerință ca să învățați să faceți un demo și să arătați părțile din
-    /// program care merg (și să le evitați pe cele care nu merg).
-    ///
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
-    /// alt fișier propriu cu ce alt nume doriți.
-    /// Exemplu:
-    /// std::ifstream fis("date.txt");
-    /// for(int i = 0; i < nr2; ++i)
-    ///     fis >> v2[i];
-    //////////////////////////////////////////////////////////////////////////////
-    /// carti kingdom de construit ordine: moat (fara reactie), village, smithy, festival, laboratory, throne room, merchant, gardens, council room (fara +1 draw la adversar prob),  woodcutter
-    ///
-    ///
-
