@@ -7,12 +7,12 @@ Victory_Card::Victory_Card(int cost, const std::string& name, int points)
 int Victory_Card::getPoints() const {
     return points;
 }
-void Victory_Card::print(std::ostream& os) const{
+/*void Victory_Card::print(std::ostream& os) const{
     Card::print(os);
     os << " [Victory " << points << " pts]";
 }
-
-std::ostream& Victory_Card::operator<<(std::ostream& os, const Victory_Card& obj) const{
-    obj.print(os);
+*/
+std::ostream& operator<<(std::ostream& os, const Victory_Card& obj){
+    os << " [Victory " << obj.points << " pts]";
     return os;
 }

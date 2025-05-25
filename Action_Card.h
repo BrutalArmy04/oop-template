@@ -2,6 +2,7 @@
 #define ACTION_CARD_H
 #pragma once
 #include "Card.h"
+#include <ostream>
 
 class Action_Card : public Card {
 private:
@@ -12,8 +13,8 @@ public:
 
     void play(class Player& player) const override;
 
-    void print(std::ostream& os) const override;
-    std::ostream& operator<<(std::ostream& os, const Action_Card& obj) const;
+    //void print(std::ostream& os) const override;
+    friend std::ostream& operator<<(std::ostream& os, const Action_Card& obj);
 
 };
 

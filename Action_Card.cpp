@@ -11,11 +11,15 @@ void Action_Card::play(Player& player) const {
     player.addBuys(extra_buys);
 }
 
-void Action_Card::print(std::ostream& os) const{
+/*void Action_Card::print(std::ostream& os) const{
     Card::print(os);
     os << " [Action +" << extra_actions << "A +" << extra_cards << "C +" << extra_currency << "$ +" << extra_buys << "B]";
-}
-std::ostream& Action_Card::operator<<(std::ostream& os, const Action_Card& obj) const {
-    obj.print(os);
+}*/
+std::ostream& operator<<(std::ostream& os, const Action_Card& obj) {
+    // Customize the output as needed
+    os << "Action_Card [extra_actions: " << obj.extra_actions
+       << ", extra_cards: " << obj.extra_cards
+       << ", extra_currency: " << obj.extra_currency
+       << ", extra_buys: " << obj.extra_buys << "]";
     return os;
 }
