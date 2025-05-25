@@ -8,10 +8,10 @@ public:
     Victory_Card(int cost, const std::string& name, int points);
     [[nodiscard]]int  getPoints() const;
     void print(std::ostream& os) const override;
-    friend std::ostream& operator<<(std::ostream& os, const Victory_Card& obj);
+
 private:
     int points;
 };
-
+std::ostream& operator<<(std::ostream& os, const Victory_Card& obj);
 #endif
 
