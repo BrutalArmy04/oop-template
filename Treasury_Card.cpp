@@ -10,3 +10,7 @@ void Treasury_Card::print(std::ostream& os) const{
     Card::print(os);
         os << " [Treasure " << value << "$]";
     }
+std::ostream& operator<<(std::ostream& os, const Treasury_Card& obj) {
+    obj.print(os);
+    return os;
+}
