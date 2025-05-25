@@ -20,7 +20,7 @@ void Player::drawCard() {
     }
 }
 
-Player::Player(const std::string &name) {}
+Player::Player(const std::string &name) : name(name) {}
 void Player::addCardToDeck(const std::shared_ptr<Card> &card) {
     discard.push_back(card);
 }
