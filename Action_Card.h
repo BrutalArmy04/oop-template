@@ -13,7 +13,8 @@ public:
     void play(class Player& player) const override;
 
     void print(std::ostream& os) const override;
+    std::ostream& operator<<(std::ostream& os, const Action_Card& obj) const;
 
 };
-std::ostream& operator<<(std::ostream& os, const Action_Card& obj);
+
 #endif

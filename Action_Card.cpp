@@ -15,7 +15,7 @@ void Action_Card::print(std::ostream& os) const{
     Card::print(os);
     os << " [Action +" << extra_actions << "A +" << extra_cards << "C +" << extra_currency << "$ +" << extra_buys << "B]";
 }
-std::ostream& operator<<(std::ostream& os, const Action_Card& obj) {
+std::ostream& Action_Card::operator<<(std::ostream& os, const Action_Card& obj) const {
     obj.print(os);
     return os;
 }

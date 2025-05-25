@@ -12,7 +12,7 @@ void Victory_Card::print(std::ostream& os) const{
     os << " [Victory " << points << " pts]";
 }
 
-std::ostream& operator<<(std::ostream& os, const Victory_Card& obj) {
+std::ostream& Victory_Card::operator<<(std::ostream& os, const Victory_Card& obj) const{
     obj.print(os);
     return os;
 }
