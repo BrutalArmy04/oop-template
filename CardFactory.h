@@ -7,6 +7,7 @@
 #include "Treasury_Card.h"
 #include "Victory_Card.h"
 #include "Action_Card.h"
+#include <stdexcept>
 
 class CardFactory {
 public:
